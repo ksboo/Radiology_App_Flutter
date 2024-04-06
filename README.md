@@ -13,6 +13,8 @@ This project is a radiology management system that facilitates patient, physicia
 2. Follow the installation instructions provided for your operating system.
 
 3. During the installation process, set up a username and password for your MySQL database. Make a note of these credentials as you'll need them later.
+   
+4. Create the database referring to the MySQL_Queries file in the repository. 
 
 ### MongoDB Installation:
 
