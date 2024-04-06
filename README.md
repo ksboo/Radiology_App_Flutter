@@ -70,6 +70,7 @@ Contributors
 ------------
 
 - Khushboo Shrivastava
+- KV Karthik
 
 License
 -------
