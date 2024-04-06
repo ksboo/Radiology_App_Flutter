@@ -1,0 +1,197 @@
+These are mysql queries to create the tables with dummy values required to run the app :
+
+Total tables = 8
++-------------------------------------+
+| Tables_in_radiologymanagementsystem |
++-------------------------------------+
+| appointments                        |
+| billing                             |
+| equipment                           |
+| imagingprocedures                   |
+| imagingreports                      |
+| patients                            |
+| physicians                          |
+| staff                               |
++-------------------------------------+
+
+// Creating DATABASE :
+
+
+CREATE DATABASE radiologymanagementsystem;
+
+
+// Creating Tables :
+
+CREATE TABLE `patients` (
+  `PatientID` int NOT NULL AUTO_INCREMENT,
+  `FirstName` varchar(50) DEFAULT NULL,
+  `LastName` varchar(50) DEFAULT NULL,
+  `DateOfBirth` date DEFAULT NULL,
+  `Gender` enum('Male','Female') DEFAULT NULL,
+  `StreetNumber` varchar(10) DEFAULT NULL,
+  `StreetName` varchar(100) DEFAULT NULL,
+  `City` varchar(100) DEFAULT NULL,
+  `Country` varchar(100) DEFAULT NULL,
+  `ContactNumber` varchar(15) DEFAULT NULL,
+  `password` char(60) DEFAULT NULL,
+  PRIMARY KEY (`PatientID`)
+);
+
+CREATE TABLE ⁠ physicians ⁠ (
+  ⁠ PhysicianID ⁠ int NOT NULL AUTO_INCREMENT,
+  ⁠ FirstName ⁠ varchar(50) DEFAULT NULL,
+  ⁠ LastName ⁠ varchar(50) DEFAULT NULL,
+  ⁠ Specialization ⁠ varchar(100) DEFAULT NULL,
+  ⁠ ContactNumber ⁠ varchar(15) DEFAULT NULL,
+  ⁠ password ⁠ varchar(60) DEFAULT NULL,
+  PRIMARY KEY (⁠ PhysicianID ⁠));
+
+CREATE TABLE appointments (
+  AppointmentID int NOT NULL AUTO_INCREMENT,
+  PatientID int DEFAULT NULL,
+  PhysicianID int DEFAULT NULL,
+  ProcedureType varchar(100) DEFAULT NULL,
+  AppointmentDate date DEFAULT NULL,
+  AppointmentTime time DEFAULT NULL,
+  PRIMARY KEY (AppointmentID),
+  KEY PatientID (PatientID),
+  KEY PhysicianID (PhysicianID),
+  CONSTRAINT fk_patient
+    FOREIGN KEY (PatientID) 
+    REFERENCES patients(PatientID),
+  CONSTRAINT fk_physician
+    FOREIGN KEY (PhysicianID) 
+    REFERENCES physicians(PhysicianID)
+);
+
+CREATE TABLE staff (
+  StaffID int NOT NULL AUTO_INCREMENT,
+  FirstName varchar(50) DEFAULT NULL,
+  LastName varchar(50) DEFAULT NULL,
+  StreetNumber varchar(10) DEFAULT NULL,
+  StreetName varchar(100) DEFAULT NULL,
+  City varchar(100) DEFAULT NULL,
+  Country varchar(100) DEFAULT NULL,
+  ContactNumber varchar(15) DEFAULT NULL,
+  Role varchar(100) DEFAULT NULL,
+  Password varchar(60) DEFAULT NULL,
+  PRIMARY KEY (StaffID)
+);
+
+
+CREATE TABLE billing (
+  BillingID int NOT NULL AUTO_INCREMENT,
+  PatientID int DEFAULT NULL,
+  ProcedureID int DEFAULT NULL,
+  BillingDateTime datetime DEFAULT NULL,
+  Amount decimal(10,2) DEFAULT NULL,
+  PaymentStatus enum('Pending','Paid') DEFAULT NULL,
+  PRIMARY KEY (BillingID),
+  KEY PatientID (PatientID),
+  KEY ProcedureID (ProcedureID),
+  CONSTRAINT billing_ibfk_1 FOREIGN KEY (PatientID) REFERENCES patients (PatientID),
+  CONSTRAINT billing_ibfk_2 FOREIGN KEY (ProcedureID) REFERENCES imagingprocedures (ProcedureID)
+);
+
+
+CREATE TABLE imagingreports (
+  ReportID int NOT NULL AUTO_INCREMENT,
+  ProcedureID int DEFAULT NULL,
+  ReportDateTime datetime DEFAULT NULL,
+  Diagnoses text,
+  Findings text,
+  Recommendations text,
+  PRIMARY KEY (ReportID),
+  KEY ProcedureID (ProcedureID),
+  CONSTRAINT imagingreports_ibfk_1 FOREIGN KEY (ProcedureID) REFERENCES imagingprocedures (ProcedureID)
+);
+
+CREATE TABLE `equipment` (
+  `EquipmentID` int NOT NULL AUTO_INCREMENT,
+  `EquipmentName` varchar(100) DEFAULT NULL,
+  `PurchaseDate` date DEFAULT NULL,
+  `MaintenanceStatus` enum('Operational','Under Maintenance') DEFAULT NULL,
+  `Manufacturer` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`EquipmentID`)
+);
+
+CREATE TABLE imagingprocedures (
+  ProcedureID int NOT NULL AUTO_INCREMENT,
+  ProcedureType varchar(100) DEFAULT NULL,
+  Cost decimal(10,2) DEFAULT NULL,
+  Description text,
+  PRIMARY KEY (ProcedureID)
+);
+
+
+// ADDING DUMMY VALUES
+
+INSERT INTO patients (FirstName, LastName, DateOfBirth, Gender, StreetNumber, StreetName, City, Country, ContactNumber, password)
+VALUES 
+('John', 'Doe', '1990-05-15', 'Male', '123', 'Main Street', 'New York', 'USA', '1234567890', 'password1'),
+('Jane', 'Smith', '1985-09-20', 'Female', '456', 'Elm Street', 'Los Angeles', 'USA', '9876543210', 'password2'),
+('Mike', 'Johnson', '1978-03-10', 'Male', '789', 'Oak Street', 'Chicago', 'USA', '5554443333', 'password3'),
+('Emily', 'Davis', '1995-11-25', 'Female', '101', 'Pine Street', 'Houston', 'USA', '2223334444', 'password4'),
+('David', 'Brown', '1980-07-03', 'Male', '222', 'Cedar Street', 'Miami', 'USA', '7778889999', 'password5');
+
+
+INSERT INTO physicians (FirstName, LastName, Specialization, ContactNumber, password)
+VALUES 
+('Dr. Michael', 'Anderson', 'Radiologist', '1112223333', 'password1'),
+('Dr. Sarah', 'Wilson', 'Cardiologist', '4445556666', 'password2'),
+('Dr. Robert', 'Martinez', 'Neurologist', '7778889999', 'password3'),
+('Dr. Emily', 'Taylor', 'Oncologist', '8887776666', 'password4'),
+('Dr. James', 'Clark', 'Pediatrician', '9998887777', 'password5');
+
+
+
+INSERT INTO appointments (PatientID, PhysicianID, ProcedureType, AppointmentDate, AppointmentTime)
+VALUES 
+(1, 1, 'X-Ray', '2024-04-10', '09:00:00'),
+(2, 2, 'MRI', '2024-04-11', '10:30:00'),
+(3, 3, 'CT Scan', '2024-04-12', '11:45:00'),
+(4, 4, 'Ultrasound', '2024-04-13', '13:15:00'),
+(5, 5, 'Echocardiogram', '2024-04-14', '14:45:00');
+
+
+INSERT INTO staff (FirstName, LastName, StreetNumber, StreetName, City, Country, ContactNumber, Role, Password)
+VALUES 
+('Alice', 'Johnson', '123', 'Broadway', 'New York', 'USA', '1112223333', 'Receptionist', 'password1'),
+('Bob', 'Smith', '456', 'Market Street', 'Los Angeles', 'USA', '4445556666', 'Technician', 'password2'),
+('Charlie', 'Brown', '789', 'Church Street', 'Chicago', 'USA', '7778889999', 'Nurse', 'password3'),
+('Diana', 'Davis', '101', 'Park Avenue', 'Houston', 'USA', '8887776666', 'Administrator', 'password4'),
+('Eva', 'Miller', '222', 'King Street', 'Miami', 'USA', '9998887777', 'Janitor', 'password5');
+
+
+INSERT INTO billing (PatientID, ProcedureID, BillingDateTime, Amount, PaymentStatus)
+VALUES 
+(1, 1, '2024-04-10 10:00:00', 150.00, 'Paid'),
+(2, 2, '2024-04-11 11:30:00', 200.00, 'Paid'),
+(3, 3, '2024-04-12 12:45:00', 300.00, 'Pending'),
+(4, 4, '2024-04-13 14:15:00', 250.00, 'Pending'),
+(5, 5, '2024-04-14 15:45:00', 180.00, 'Paid');
+
+
+INSERT INTO imagingreports (ProcedureID, ReportDateTime, Diagnoses, Findings, Recommendations)
+VALUES 
+(1, '2024-04-10 11:00:00', 'Normal', 'No abnormalities found.', 'N/A'),
+(2, '2024-04-11 12:30:00', 'Abnormal', 'MRI scan shows abnormalities in the brain.', 'Consult neurologist for further evaluation.'),
+(3, '2024-04-12 13:45:00', 'Normal', 'CT scan results are normal.', 'N/A'),
+(4, '2024-04-13 15:15:00', 'Abnormal', 'Ultrasound detects gallstones.', 'Refer patient for treatment options.'),
+(5, '2024-04-14 16:45:00', 'Normal', 'Echocardiogram shows normal heart function.', 'N/A');
+
+INSERT INTO equipment (EquipmentName, PurchaseDate, MaintenanceStatus, Manufacturer)
+VALUES 
+('X-Ray Machine', '2022-01-01', 'Operational', 'Manufacturer A'),
+('MRI Scanner', '2021-03-15', 'Under Maintenance', 'Manufacturer B'),
+('CT Scanner', '2020-05-20', 'Operational', 'Manufacturer C'),
+('Ultrasound Machine', '2019-07-10', 'Operational', 'Manufacturer D'),
+('Echocardiography Machine', '2018-09-25', 'Under Maintenance', 'Manufacturer E');
+
+INSERT INTO imagingprocedures (ProcedureType, Cost, Description)
+VALUES 
+('X-Ray', 100.00, 'X-Ray imaging procedure'),
+('MRI', 200.00, 'MRI imaging procedure'),
+('CT Scan', 300.00, 'CT scan imaging procedure'),
+('Ultrasound', 150.00, 'Ultrasound imaging procedure'),
+('Echocardiogram', 180.00, 'Echocardiogram imaging procedure');
