@@ -63,3 +63,13 @@ This project is a radiology management system that facilitates patient, physicia
       flutter run
 
 3. Access the application from your web browser or mobile device.
+
+Contributors
+------------
+
+- Khushboo Shrivastava
+
+License
+-------
+
+This project is licensed under the [MIT License](LICENSE).
